@@ -9,7 +9,12 @@ import {
   CheckSquare, 
   TrendingUp,
   Clock,
-  AlertCircle
+  AlertCircle,
+  ArrowUp,
+  ArrowDown,
+  Calendar,
+  Target,
+  Zap
 } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
@@ -18,7 +23,7 @@ const Dashboard: React.FC = () => {
 
   if (clientsLoading || tasksLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="metric-card">
@@ -54,179 +59,259 @@ const Dashboard: React.FC = () => {
     .sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime())
     .slice(0, 5);
 
+  const weeklyGrowth = clients.filter(c => {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    return new Date(c.created_at) > weekAgo;
+  }).length;
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-        <p className="text-slate-600 mt-1">Resumen de tu actividad comercial</p>
+    <div className="space-y-8">
+      {/* Header con saludo */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">
+            ¡Buen día! 👋
+          </h1>
+          <p className="text-lg text-slate-600">
+            Aquí tienes un resumen de tu actividad comercial
+          </p>
+        </div>
+        <div className="mt-4 lg:mt-0 flex items-center space-x-3">
+          <div className="flex items-center px-4 py-2 bg-green-50 text-green-700 rounded-xl border border-green-200">
+            <Zap className="w-4 h-4 mr-2" />
+            <span className="font-medium">Todo actualizado</span>
+          </div>
+        </div>
       </div>
 
-      {/* Metrics Cards */}
+      {/* Métricas principales */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="metric-card">
+        <div className="metric-card group hover:shadow-strong">
           <div className="flex items-center justify-between">
             <div>
-              <div className="metric-value">{totalClients}</div>
+              <div className="metric-value text-blue-600">{totalClients}</div>
               <div className="metric-label">Total Clientes</div>
             </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users className="w-6 h-6 text-blue-600" />
+            <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <Users className="w-7 h-7 text-white" />
             </div>
           </div>
-          <div className="metric-change positive">
-            +{clients.filter(c => {
-              const weekAgo = new Date();
-              weekAgo.setDate(weekAgo.getDate() - 7);
-              return new Date(c.created_at) > weekAgo;
-            }).length} esta semana
+          <div className="flex items-center mt-4">
+            <ArrowUp className="w-4 h-4 text-green-500 mr-1" />
+            <span className="text-sm font-medium text-green-600">+{weeklyGrowth} esta semana</span>
           </div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card group hover:shadow-strong">
           <div className="flex items-center justify-between">
             <div>
-              <div className="metric-value">{formatCurrency(totalValue)}</div>
-              <div className="metric-label">Valor Estimado</div>
+              <div className="metric-value text-green-600">{formatCurrency(totalValue)}</div>
+              <div className="metric-label">Valor Pipeline</div>
             </div>
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-green-600" />
+            <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <DollarSign className="w-7 h-7 text-white" />
             </div>
           </div>
-          <div className="metric-change positive">
-            Pipeline total
+          <div className="flex items-center mt-4">
+            <Target className="w-4 h-4 text-slate-400 mr-1" />
+            <span className="text-sm text-slate-600">Oportunidades activas</span>
           </div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card group hover:shadow-strong">
           <div className="flex items-center justify-between">
             <div>
-              <div className="metric-value">{pendingTasks}</div>
+              <div className="metric-value text-amber-600">{pendingTasks}</div>
               <div className="metric-label">Tareas Pendientes</div>
             </div>
-            <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
-              <CheckSquare className="w-6 h-6 text-amber-600" />
+            <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <CheckSquare className="w-7 h-7 text-white" />
             </div>
           </div>
-          {overdueTasks > 0 && (
-            <div className="metric-change negative">
-              {overdueTasks} vencidas
+          {overdueTasks > 0 ? (
+            <div className="flex items-center mt-4">
+              <AlertCircle className="w-4 h-4 text-red-500 mr-1" />
+              <span className="text-sm font-medium text-red-600">{overdueTasks} vencidas</span>
+            </div>
+          ) : (
+            <div className="flex items-center mt-4">
+              <Clock className="w-4 h-4 text-green-500 mr-1" />
+              <span className="text-sm font-medium text-green-600">Al día</span>
             </div>
           )}
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card group hover:shadow-strong">
           <div className="flex items-center justify-between">
             <div>
-              <div className="metric-value">{conversionRate.toFixed(1)}%</div>
+              <div className="metric-value text-purple-600">{conversionRate.toFixed(1)}%</div>
               <div className="metric-label">Tasa Conversión</div>
             </div>
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-purple-600" />
+            <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <TrendingUp className="w-7 h-7 text-white" />
             </div>
           </div>
-          <div className="metric-change positive">
-            {closedClients} cerrados
+          <div className="flex items-center mt-4">
+            <ArrowUp className="w-4 h-4 text-green-500 mr-1" />
+            <span className="text-sm font-medium text-green-600">{closedClients} cerrados</span>
           </div>
         </div>
       </div>
 
-      {/* Charts and Lists */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Client Status Distribution */}
-        <div className="card">
-          <div className="card-header">
-            <h3 className="text-lg font-semibold text-slate-900">Distribución por Estado</h3>
-          </div>
-          <div className="card-body space-y-4">
-            {clientsByStatus.map(status => (
-              <div key={status.value} className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="w-3 h-3 rounded-full bg-slate-300 mr-3"></div>
-                  <span className="text-sm font-medium text-slate-700">{status.label}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-slate-600">{status.count}</span>
-                  <div className="w-20 h-2 bg-slate-100 rounded-full overflow-hidden">
+      {/* Gráficos y listas */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        {/* Distribución por estado */}
+        <div className="xl:col-span-1">
+          <div className="card">
+            <div className="card-header">
+              <h3 className="text-xl font-bold text-slate-900">Pipeline de Ventas</h3>
+              <p className="text-sm text-slate-600 mt-1">Distribución por estado</p>
+            </div>
+            <div className="card-body space-y-4">
+              {clientsByStatus.map(status => (
+                <div key={status.value} className="group">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center">
+                      <div className={`w-3 h-3 rounded-full mr-3 ${
+                        status.value === 'nuevo' ? 'bg-blue-500' :
+                        status.value === 'interesado' ? 'bg-amber-500' :
+                        status.value === 'propuesta' ? 'bg-purple-500' :
+                        status.value === 'negociacion' ? 'bg-orange-500' :
+                        status.value === 'cerrado' ? 'bg-green-500' :
+                        'bg-red-500'
+                      }`}></div>
+                      <span className="text-sm font-semibold text-slate-700">{status.label}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-bold text-slate-900">{status.count}</span>
+                      <span className="text-xs text-slate-500">({status.percentage.toFixed(0)}%)</span>
+                    </div>
+                  </div>
+                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-blue-500 rounded-full transition-all duration-300"
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        status.value === 'nuevo' ? 'bg-blue-500' :
+                        status.value === 'interesado' ? 'bg-amber-500' :
+                        status.value === 'propuesta' ? 'bg-purple-500' :
+                        status.value === 'negociacion' ? 'bg-orange-500' :
+                        status.value === 'cerrado' ? 'bg-green-500' :
+                        'bg-red-500'
+                      }`}
                       style={{ width: `${status.percentage}%` }}
                     ></div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Recent Clients */}
-        <div className="card">
-          <div className="card-header">
-            <h3 className="text-lg font-semibold text-slate-900">Clientes Recientes</h3>
-          </div>
-          <div className="card-body">
-            {recentClients.length > 0 ? (
-              <div className="space-y-3">
-                {recentClients.map(client => (
-                  <div key={client.id} className="flex items-center justify-between py-2">
-                    <div>
-                      <p className="font-medium text-slate-900">{client.name}</p>
-                      <p className="text-sm text-slate-600">{client.company || client.email}</p>
+        {/* Clientes recientes */}
+        <div className="xl:col-span-2">
+          <div className="card">
+            <div className="card-header">
+              <h3 className="text-xl font-bold text-slate-900">Actividad Reciente</h3>
+              <p className="text-sm text-slate-600 mt-1">Últimos clientes agregados</p>
+            </div>
+            <div className="card-body">
+              {recentClients.length > 0 ? (
+                <div className="space-y-4">
+                  {recentClients.map(client => (
+                    <div key={client.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors group">
+                      <div className="flex items-center">
+                        <div className="w-12 h-12 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center mr-4">
+                          <span className="text-slate-700 font-bold text-sm">
+                            {client.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">{client.name}</p>
+                          <p className="text-sm text-slate-600">{client.company || client.email}</p>
+                          {client.estimated_value && (
+                            <p className="text-xs text-green-600 font-medium">{formatCurrency(client.estimated_value)}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className={`status-badge status-${client.status}`}>
+                          {CLIENT_STATUSES.find(s => s.value === client.status)?.label}
+                        </span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          {new Date(client.created_at).toLocaleDateString('es-ES')}
+                        </p>
+                      </div>
                     </div>
-                    <span className={`status-badge status-${client.status}`}>
-                      {CLIENT_STATUSES.find(s => s.value === client.status)?.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="empty-state py-8">
-                <Users className="empty-state-icon" />
-                <h4 className="empty-state-title">No hay clientes</h4>
-                <p className="empty-state-description">
-                  Comienza agregando tu primer cliente
-                </p>
-              </div>
-            )}
+                  ))}
+                </div>
+              ) : (
+                <div className="empty-state py-8">
+                  <Users className="empty-state-icon" />
+                  <h4 className="empty-state-title">No hay clientes</h4>
+                  <p className="empty-state-description">
+                    Comienza agregando tu primer cliente
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Upcoming Tasks */}
+      {/* Próximas tareas */}
       <div className="card">
         <div className="card-header">
-          <h3 className="text-lg font-semibold text-slate-900">Próximas Tareas</h3>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-xl font-bold text-slate-900">Próximas Tareas</h3>
+              <p className="text-sm text-slate-600 mt-1">Mantente al día con tus compromisos</p>
+            </div>
+            <Calendar className="w-6 h-6 text-slate-400" />
+          </div>
         </div>
         <div className="card-body">
           {upcomingTasks.length > 0 ? (
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {upcomingTasks.map(task => (
-                <div key={task.id} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-b-0">
-                  <div className="flex items-center">
-                    {task.status === 'vencida' ? (
-                      <AlertCircle className="w-4 h-4 text-red-500 mr-3" />
-                    ) : (
-                      <Clock className="w-4 h-4 text-slate-400 mr-3" />
-                    )}
-                    <div>
-                      <p className="font-medium text-slate-900">{task.title}</p>
-                      <p className="text-sm text-slate-600">
-                        Vence: {new Date(task.due_date).toLocaleDateString('es-ES')}
-                      </p>
+                <div key={task.id} className="p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors group">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center">
+                      {task.status === 'vencida' ? (
+                        <AlertCircle className="w-5 h-5 text-red-500 mr-2 flex-shrink-0" />
+                      ) : (
+                        <Clock className="w-5 h-5 text-slate-400 mr-2 flex-shrink-0" />
+                      )}
+                      <span className={`status-badge priority-${task.priority}`}>
+                        {task.priority}
+                      </span>
                     </div>
                   </div>
-                  <span className={`status-badge priority-${task.priority}`}>
-                    {task.priority}
-                  </span>
+                  <h4 className="font-semibold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
+                    {task.title}
+                  </h4>
+                  <p className="text-sm text-slate-600 mb-3 line-clamp-2">
+                    {task.description || 'Sin descripción'}
+                  </p>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-500">
+                      Vence: {new Date(task.due_date).toLocaleDateString('es-ES')}
+                    </span>
+                    <span className="text-slate-400">
+                      {new Date(task.due_date).toLocaleTimeString('es-ES', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
             <div className="empty-state py-8">
               <CheckSquare className="empty-state-icon" />
-              <h4 className="empty-state-title">No hay tareas pendientes</h4>
+              <h4 className="empty-state-title">¡Excelente trabajo!</h4>
               <p className="empty-state-description">
-                ¡Excelente! Todas las tareas están completadas
+                No tienes tareas pendientes por el momento
               </p>
             </div>
           )}
