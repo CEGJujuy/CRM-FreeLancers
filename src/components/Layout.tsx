@@ -8,8 +8,10 @@ import {
   Settings,
   Search,
   Bell,
-  User
+  User,
+  Database
 } from 'lucide-react';
+import { exportData } from '../lib/localStorage';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -72,6 +74,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <p className="text-xs text-slate-500">freelancer@email.com</p>
               </div>
             </div>
+            <button 
+              onClick={exportData}
+              className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
+              title="Exportar datos"
+            >
+              <Database className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </div>

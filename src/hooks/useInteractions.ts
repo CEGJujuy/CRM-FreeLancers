@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Interaction, InteractionType } from '../types';
-import { supabase, isMockMode } from '../lib/supabase';
+import { getFromStorage, saveToStorage, generateId, STORAGE_KEYS } from '../lib/localStorage';
 
-// Mock data para pruebas
-const mockInteractions: Interaction[] = [
+// Datos iniciales para el primer uso
+const initialInteractions: Interaction[] = [
   {
     id: '1',
     client_id: '1',
     type: 'email',
-    description: 'Envié propuesta inicial para tienda online',
+    description: 'Envié propuesta inicial para tienda online con catálogo de productos y carrito de compras',
     date: '2024-01-15T10:00:00Z',
     created_at: '2024-01-15T10:00:00Z',
   },
@@ -16,7 +16,7 @@ const mockInteractions: Interaction[] = [
     id: '2',
     client_id: '2',
     type: 'llamada',
-    description: 'Llamada para discutir requerimientos de la app',
+    description: 'Llamada para discutir requerimientos técnicos de la app móvil y timeline del proyecto',
     date: '2024-01-12T15:30:00Z',
     created_at: '2024-01-12T15:30:00Z',
   },
@@ -24,9 +24,33 @@ const mockInteractions: Interaction[] = [
     id: '3',
     client_id: '1',
     type: 'reunion',
-    description: 'Reunión presencial para revisar diseños',
+    description: 'Reunión presencial para revisar diseños y mockups de la tienda online',
     date: '2024-01-18T11:00:00Z',
     created_at: '2024-01-18T11:00:00Z',
+  },
+  {
+    id: '4',
+    client_id: '3',
+    type: 'email',
+    description: 'Primer contacto, envié portfolio y casos de éxito en branding',
+    date: '2024-01-20T14:15:00Z',
+    created_at: '2024-01-20T14:15:00Z',
+  },
+  {
+    id: '5',
+    client_id: '4',
+    type: 'propuesta',
+    description: 'Envié propuesta detallada para migración de tienda física a e-commerce',
+    date: '2024-01-19T09:30:00Z',
+    created_at: '2024-01-19T09:30:00Z',
+  },
+  {
+    id: '6',
+    client_id: '2',
+    type: 'seguimiento',
+    description: 'Seguimiento post-propuesta, cliente interesado en proceder con el desarrollo',
+    date: '2024-01-22T16:00:00Z',
+    created_at: '2024-01-22T16:00:00Z',
   },
 ];
 
@@ -35,105 +59,76 @@ export const useInteractions = (clientId?: string) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchInteractions = async () => {
+  // Cargar interacciones del localStorage al inicializar
+  useEffect(() => {
     try {
       setLoading(true);
+      const storedInteractions = getFromStorage(STORAGE_KEYS.INTERACTIONS, []);
       
-      if (isMockMode) {
-        setTimeout(() => {
-          const filtered = clientId 
-            ? mockInteractions.filter(i => i.client_id === clientId)
-            : mockInteractions;
-          setInteractions(filtered);
-          setLoading(false);
-        }, 300);
-        return;
+      // Si no hay interacciones guardadas, usar datos iniciales
+      if (storedInteractions.length === 0) {
+        setInteractions(initialInteractions);
+        saveToStorage(STORAGE_KEYS.INTERACTIONS, initialInteractions);
+      } else {
+        setInteractions(storedInteractions);
       }
-
-      let query = supabase
-        .from('interactions')
-        .select('*')
-        .order('date', { ascending: false });
-
-      if (clientId) {
-        query = query.eq('client_id', clientId);
-      }
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-      setInteractions(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al cargar interacciones');
-      // Fallback a datos mock
-      const filtered = clientId 
-        ? mockInteractions.filter(i => i.client_id === clientId)
-        : mockInteractions;
-      setInteractions(filtered);
+      setError('Error al cargar interacciones');
+      setInteractions(initialInteractions);
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  // Filtrar por cliente si se especifica
+  const filteredInteractions = clientId 
+    ? interactions.filter(i => i.client_id === clientId)
+    : interactions;
+
+  // Guardar interacciones en localStorage
+  const saveInteractions = (newInteractions: Interaction[]) => {
+    setInteractions(newInteractions);
+    saveToStorage(STORAGE_KEYS.INTERACTIONS, newInteractions);
   };
 
   const addInteraction = async (interactionData: Omit<Interaction, 'id' | 'created_at'>) => {
     try {
-      if (isMockMode) {
-        const newInteraction: Interaction = {
-          ...interactionData,
-          id: Date.now().toString(),
-          created_at: new Date().toISOString(),
-        };
-        setInteractions(prev => [newInteraction, ...prev]);
-        return newInteraction;
-      }
-
-      const { data, error } = await supabase
-        .from('interactions')
-        .insert([interactionData])
-        .select()
-        .single();
-
-      if (error) throw error;
+      const newInteraction: Interaction = {
+        ...interactionData,
+        id: generateId(),
+        created_at: new Date().toISOString(),
+      };
       
-      setInteractions(prev => [data, ...prev]);
-      return data;
+      const updatedInteractions = [newInteraction, ...interactions];
+      saveInteractions(updatedInteractions);
+      return newInteraction;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al crear interacción');
+      setError('Error al crear interacción');
       throw err;
     }
   };
 
   const deleteInteraction = async (id: string) => {
     try {
-      if (isMockMode) {
-        setInteractions(prev => prev.filter(interaction => interaction.id !== id));
-        return;
-      }
-
-      const { error } = await supabase
-        .from('interactions')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      
-      setInteractions(prev => prev.filter(interaction => interaction.id !== id));
+      const updatedInteractions = interactions.filter(interaction => interaction.id !== id);
+      saveInteractions(updatedInteractions);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al eliminar interacción');
+      setError('Error al eliminar interacción');
       throw err;
     }
   };
 
-  useEffect(() => {
-    fetchInteractions();
-  }, [clientId]);
+  const refetch = () => {
+    const storedInteractions = getFromStorage(STORAGE_KEYS.INTERACTIONS, []);
+    setInteractions(storedInteractions);
+  };
 
   return {
-    interactions,
+    interactions: filteredInteractions,
     loading,
     error,
     addInteraction,
     deleteInteraction,
-    refetch: fetchInteractions,
+    refetch,
   };
 };

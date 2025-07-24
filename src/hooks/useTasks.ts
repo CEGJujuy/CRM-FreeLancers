@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Task, TaskStatus, TaskPriority } from '../types';
-import { supabase, isMockMode } from '../lib/supabase';
+import { getFromStorage, saveToStorage, generateId, STORAGE_KEYS } from '../lib/localStorage';
 
-// Mock data para pruebas
-const mockTasks: Task[] = [
+// Datos iniciales para el primer uso
+const initialTasks: Task[] = [
   {
     id: '1',
     client_id: '1',
     title: 'Enviar propuesta revisada',
-    description: 'Incluir cambios solicitados en la reunión',
+    description: 'Incluir cambios solicitados en la reunión: integración con Stripe y diseño responsive',
     due_date: '2024-01-25T10:00:00Z',
     priority: 'alta',
     status: 'pendiente',
@@ -19,7 +19,7 @@ const mockTasks: Task[] = [
     id: '2',
     client_id: '2',
     title: 'Llamar para seguimiento',
-    description: 'Verificar si han revisado la propuesta',
+    description: 'Verificar si han revisado la propuesta de la app móvil y resolver dudas técnicas',
     due_date: '2024-01-22T15:00:00Z',
     priority: 'media',
     status: 'vencida',
@@ -29,12 +29,44 @@ const mockTasks: Task[] = [
   {
     id: '3',
     title: 'Actualizar portfolio',
-    description: 'Agregar últimos proyectos completados',
+    description: 'Agregar últimos proyectos completados y testimonios de clientes',
     due_date: '2024-01-30T12:00:00Z',
     priority: 'baja',
     status: 'pendiente',
     created_at: '2024-01-18T10:00:00Z',
     updated_at: '2024-01-18T10:00:00Z',
+  },
+  {
+    id: '4',
+    client_id: '3',
+    title: 'Preparar moodboard',
+    description: 'Crear moodboard con referencias visuales para el proyecto de branding',
+    due_date: '2024-01-26T14:00:00Z',
+    priority: 'alta',
+    status: 'pendiente',
+    created_at: '2024-01-21T09:00:00Z',
+    updated_at: '2024-01-21T09:00:00Z',
+  },
+  {
+    id: '5',
+    client_id: '4',
+    title: 'Análisis de competencia',
+    description: 'Investigar tiendas online similares para proponer mejores prácticas',
+    due_date: '2024-01-24T16:00:00Z',
+    priority: 'media',
+    status: 'completada',
+    created_at: '2024-01-19T11:00:00Z',
+    updated_at: '2024-01-23T14:30:00Z',
+  },
+  {
+    id: '6',
+    title: 'Renovar certificados SSL',
+    description: 'Renovar certificados de seguridad para todos los sitios web en hosting',
+    due_date: '2024-01-28T09:00:00Z',
+    priority: 'alta',
+    status: 'pendiente',
+    created_at: '2024-01-20T15:00:00Z',
+    updated_at: '2024-01-20T15:00:00Z',
   },
 ];
 
@@ -43,130 +75,90 @@ export const useTasks = (clientId?: string) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchTasks = async () => {
+  // Cargar tareas del localStorage al inicializar
+  useEffect(() => {
     try {
       setLoading(true);
+      const storedTasks = getFromStorage(STORAGE_KEYS.TASKS, []);
       
-      if (isMockMode) {
-        setTimeout(() => {
-          let filtered = mockTasks;
-          if (clientId) {
-            filtered = mockTasks.filter(t => t.client_id === clientId);
-          }
-          // Actualizar estado de tareas vencidas
-          filtered = filtered.map(task => ({
-            ...task,
-            status: new Date(task.due_date) < new Date() && task.status === 'pendiente' 
-              ? 'vencida' as TaskStatus
-              : task.status
-          }));
-          setTasks(filtered);
-          setLoading(false);
-        }, 300);
-        return;
+      // Si no hay tareas guardadas, usar datos iniciales
+      if (storedTasks.length === 0) {
+        // Actualizar estado de tareas vencidas
+        const tasksWithUpdatedStatus = initialTasks.map(task => ({
+          ...task,
+          status: new Date(task.due_date) < new Date() && task.status === 'pendiente' 
+            ? 'vencida' as TaskStatus
+            : task.status
+        }));
+        setTasks(tasksWithUpdatedStatus);
+        saveToStorage(STORAGE_KEYS.TASKS, tasksWithUpdatedStatus);
+      } else {
+        // Actualizar estado de tareas vencidas en datos existentes
+        const tasksWithUpdatedStatus = storedTasks.map((task: Task) => ({
+          ...task,
+          status: new Date(task.due_date) < new Date() && task.status === 'pendiente' 
+            ? 'vencida' as TaskStatus
+            : task.status
+        }));
+        setTasks(tasksWithUpdatedStatus);
       }
-
-      let query = supabase
-        .from('tasks')
-        .select('*')
-        .order('due_date', { ascending: true });
-
-      if (clientId) {
-        query = query.eq('client_id', clientId);
-      }
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-      setTasks(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al cargar tareas');
-      // Fallback a datos mock
-      let filtered = mockTasks;
-      if (clientId) {
-        filtered = mockTasks.filter(t => t.client_id === clientId);
-      }
-      setTasks(filtered);
+      setError('Error al cargar tareas');
+      setTasks(initialTasks);
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  // Filtrar por cliente si se especifica
+  const filteredTasks = clientId 
+    ? tasks.filter(t => t.client_id === clientId)
+    : tasks;
+
+  // Guardar tareas en localStorage
+  const saveTasks = (newTasks: Task[]) => {
+    setTasks(newTasks);
+    saveToStorage(STORAGE_KEYS.TASKS, newTasks);
   };
 
   const addTask = async (taskData: Omit<Task, 'id' | 'created_at' | 'updated_at'>) => {
     try {
-      if (isMockMode) {
-        const newTask: Task = {
-          ...taskData,
-          id: Date.now().toString(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        };
-        setTasks(prev => [newTask, ...prev]);
-        return newTask;
-      }
-
-      const { data, error } = await supabase
-        .from('tasks')
-        .insert([taskData])
-        .select()
-        .single();
-
-      if (error) throw error;
+      const newTask: Task = {
+        ...taskData,
+        id: generateId(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
       
-      setTasks(prev => [data, ...prev]);
-      return data;
+      const updatedTasks = [newTask, ...tasks];
+      saveTasks(updatedTasks);
+      return newTask;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al crear tarea');
+      setError('Error al crear tarea');
       throw err;
     }
   };
 
   const updateTask = async (id: string, updates: Partial<Task>) => {
     try {
-      if (isMockMode) {
-        setTasks(prev => prev.map(task => 
-          task.id === id 
-            ? { ...task, ...updates, updated_at: new Date().toISOString() }
-            : task
-        ));
-        return;
-      }
-
-      const { error } = await supabase
-        .from('tasks')
-        .update({ ...updates, updated_at: new Date().toISOString() })
-        .eq('id', id);
-
-      if (error) throw error;
-      
-      setTasks(prev => prev.map(task => 
+      const updatedTasks = tasks.map(task => 
         task.id === id 
           ? { ...task, ...updates, updated_at: new Date().toISOString() }
           : task
-      ));
+      );
+      saveTasks(updatedTasks);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al actualizar tarea');
+      setError('Error al actualizar tarea');
       throw err;
     }
   };
 
   const deleteTask = async (id: string) => {
     try {
-      if (isMockMode) {
-        setTasks(prev => prev.filter(task => task.id !== id));
-        return;
-      }
-
-      const { error } = await supabase
-        .from('tasks')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-      
-      setTasks(prev => prev.filter(task => task.id !== id));
+      const updatedTasks = tasks.filter(task => task.id !== id);
+      saveTasks(updatedTasks);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al eliminar tarea');
+      setError('Error al eliminar tarea');
       throw err;
     }
   };
@@ -179,18 +171,19 @@ export const useTasks = (clientId?: string) => {
     await updateTask(id, { status: newStatus });
   };
 
-  useEffect(() => {
-    fetchTasks();
-  }, [clientId]);
+  const refetch = () => {
+    const storedTasks = getFromStorage(STORAGE_KEYS.TASKS, []);
+    setTasks(storedTasks);
+  };
 
   return {
-    tasks,
+    tasks: filteredTasks,
     loading,
     error,
     addTask,
     updateTask,
     deleteTask,
     toggleTaskStatus,
-    refetch: fetchTasks,
+    refetch,
   };
 };

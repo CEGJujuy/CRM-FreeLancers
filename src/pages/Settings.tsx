@@ -10,6 +10,7 @@ import {
   Trash2,
   Save
 } from 'lucide-react';
+import { exportData, clearAllData } from '../lib/localStorage';
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -35,6 +36,12 @@ const Settings: React.FC = () => {
     }));
   };
 
+  const handleClearData = () => {
+    if (window.confirm('¿Estás seguro de que quieres eliminar todos los datos? Esta acción no se puede deshacer.')) {
+      clearAllData();
+      window.location.reload();
+    }
+  };
   const renderTabContent = () => {
     switch (activeTab) {
       case 'profile':
@@ -168,7 +175,7 @@ const Settings: React.FC = () => {
                       <h4 className="font-medium text-blue-900">Exportar Datos</h4>
                       <p className="text-sm text-blue-700">Descarga una copia de todos tus datos</p>
                     </div>
-                    <button className="btn-secondary">
+                    <button onClick={exportData} className="btn-secondary">
                       <Download className="w-4 h-4 mr-2" />
                       Exportar
                     </button>
@@ -194,7 +201,10 @@ const Settings: React.FC = () => {
                       <h4 className="font-medium text-red-900">Eliminar Todos los Datos</h4>
                       <p className="text-sm text-red-700">Esta acción no se puede deshacer</p>
                     </div>
-                    <button className="bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition-colors">
+                    <button 
+                      onClick={handleClearData}
+                      className="bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
+                    >
                       <Trash2 className="w-4 h-4 mr-2" />
                       Eliminar
                     </button>
