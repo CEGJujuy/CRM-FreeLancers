@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,212 +9,255 @@
   }
   
   body {
-    @apply antialiased bg-slate-50;
+    @apply antialiased bg-gradient-to-br from-indigo-50 via-white to-cyan-50;
   }
 }
 
 @layer components {
-  /* Botones profesionales */
+  /* Botones vibrantes y profesionales */
   .btn-primary {
-    @apply inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-medium rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
+    @apply inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white font-semibold rounded-2xl hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-purple-300 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105;
   }
   
   .btn-secondary {
-    @apply inline-flex items-center px-4 py-2.5 bg-white text-slate-700 font-medium rounded-xl border border-slate-200 hover:bg-slate-50 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md;
+    @apply inline-flex items-center px-6 py-3 bg-gradient-to-r from-slate-100 to-slate-200 text-slate-700 font-semibold rounded-2xl border-2 border-slate-200 hover:from-white hover:to-slate-100 hover:border-purple-300 hover:text-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-200 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
+  }
+
+  .btn-success {
+    @apply inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-2xl hover:from-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-4 focus:ring-emerald-300 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1;
   }
 
   .btn-danger {
-    @apply inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-xl hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
+    @apply inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white font-semibold rounded-2xl hover:from-red-600 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-red-300 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1;
   }
   
-  /* Cards profesionales */
+  /* Cards con diseño premium */
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all duration-300;
+    @apply bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:bg-white/90;
   }
   
   .card-header {
-    @apply px-6 py-4 border-b border-slate-100;
+    @apply px-8 py-6 border-b border-gradient-to-r from-purple-100 to-blue-100;
   }
   
   .card-body {
-    @apply p-6;
+    @apply p-8;
   }
 
-  .card-hover {
-    @apply hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer;
+  .card-gradient {
+    @apply bg-gradient-to-br from-white via-purple-50/30 to-blue-50/30 backdrop-blur-xl;
   }
   
-  /* Formularios elegantes */
+  /* Formularios elegantes con colores */
   .form-input {
-    @apply w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white placeholder-slate-400;
+    @apply w-full px-6 py-4 border-2 border-purple-200 rounded-2xl focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-300 bg-white/90 backdrop-blur-sm placeholder-slate-400 text-slate-700 font-medium shadow-lg hover:shadow-xl;
   }
   
   .form-select {
-    @apply w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white;
+    @apply w-full px-6 py-4 border-2 border-purple-200 rounded-2xl focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-300 bg-white/90 backdrop-blur-sm text-slate-700 font-medium shadow-lg hover:shadow-xl;
   }
   
   .form-textarea {
-    @apply w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white placeholder-slate-400 resize-none;
+    @apply w-full px-6 py-4 border-2 border-purple-200 rounded-2xl focus:ring-4 focus:ring-purple-300 focus:border-purple-500 transition-all duration-300 bg-white/90 backdrop-blur-sm placeholder-slate-400 text-slate-700 font-medium resize-none shadow-lg hover:shadow-xl;
   }
 
-  /* Navegación elegante */
+  /* Navegación con colores vibrantes */
   .nav-link {
-    @apply flex items-center px-4 py-3 text-slate-600 rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-all duration-200 font-medium;
+    @apply flex items-center px-6 py-4 text-slate-600 rounded-2xl hover:bg-gradient-to-r hover:from-purple-100 hover:to-blue-100 hover:text-purple-700 transition-all duration-300 font-semibold group;
   }
   
   .nav-link.active {
-    @apply bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border border-blue-100 shadow-sm;
+    @apply bg-gradient-to-r from-purple-500 to-blue-600 text-white shadow-xl border-2 border-white/20;
   }
 
-  /* Métricas profesionales */
+  /* Métricas con colores llamativos */
   .metric-card {
-    @apply bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all duration-300;
+    @apply bg-gradient-to-br from-white to-slate-50/50 backdrop-blur-xl p-8 rounded-3xl shadow-xl border border-white/30 hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:scale-105;
   }
   
   .metric-value {
-    @apply text-3xl font-bold text-slate-900;
+    @apply text-4xl font-black bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent;
   }
   
   .metric-label {
-    @apply text-sm font-medium text-slate-600 mt-1;
+    @apply text-sm font-bold text-slate-600 mt-2 uppercase tracking-wider;
   }
   
-  .metric-change {
-    @apply text-xs font-medium mt-2;
-  }
-  
-  .metric-change.positive {
-    @apply text-green-600;
-  }
-  
-  .metric-change.negative {
-    @apply text-red-600;
+  .metric-icon {
+    @apply w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-all duration-300;
   }
 
-  /* Estados y badges */
+  /* Estados y badges coloridos */
   .status-badge {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border;
+    @apply inline-flex items-center px-4 py-2 rounded-full text-sm font-bold border-2 shadow-lg;
   }
   
   .status-nuevo {
-    @apply bg-blue-50 text-blue-700 border-blue-200;
+    @apply bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800 border-blue-300;
   }
   
   .status-interesado {
-    @apply bg-amber-50 text-amber-700 border-amber-200;
+    @apply bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border-amber-300;
   }
   
   .status-propuesta {
-    @apply bg-purple-50 text-purple-700 border-purple-200;
+    @apply bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border-purple-300;
   }
   
   .status-negociacion {
-    @apply bg-orange-50 text-orange-700 border-orange-200;
+    @apply bg-gradient-to-r from-orange-100 to-red-100 text-orange-800 border-orange-300;
   }
   
   .status-cerrado {
-    @apply bg-green-50 text-green-700 border-green-200;
+    @apply bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 border-emerald-300;
   }
   
   .status-perdido {
-    @apply bg-red-50 text-red-700 border-red-200;
+    @apply bg-gradient-to-r from-red-100 to-pink-100 text-red-800 border-red-300;
   }
 
   .priority-alta {
-    @apply bg-red-50 text-red-700 border-red-200;
+    @apply bg-gradient-to-r from-red-100 to-pink-100 text-red-800 border-red-300;
   }
   
   .priority-media {
-    @apply bg-yellow-50 text-yellow-700 border-yellow-200;
+    @apply bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800 border-yellow-300;
   }
   
   .priority-baja {
-    @apply bg-green-50 text-green-700 border-green-200;
+    @apply bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border-green-300;
   }
 
-  /* Modales profesionales */
+  /* Modales premium */
   .modal-overlay {
-    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 backdrop-blur-sm;
+    @apply fixed inset-0 bg-gradient-to-br from-purple-900/50 to-blue-900/50 flex items-center justify-center p-6 z-50 backdrop-blur-lg;
   }
   
   .modal-content {
-    @apply bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto;
+    @apply bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-white/30;
   }
 
-  /* Estados vacíos */
+  /* Estados vacíos atractivos */
   .empty-state {
-    @apply text-center py-12;
+    @apply text-center py-16 px-8;
   }
   
   .empty-state-icon {
-    @apply w-16 h-16 mx-auto text-slate-300 mb-4;
+    @apply w-24 h-24 mx-auto text-purple-300 mb-6;
   }
   
   .empty-state-title {
-    @apply text-lg font-semibold text-slate-900 mb-2;
+    @apply text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-4;
   }
   
   .empty-state-description {
-    @apply text-slate-600 mb-6;
+    @apply text-slate-600 mb-8 text-lg;
   }
 
-  /* Calendario profesional */
+  /* Calendario colorido */
   .calendar-day {
-    @apply min-h-[120px] p-3 border border-slate-100 bg-white hover:bg-slate-50 transition-colors;
+    @apply min-h-[140px] p-4 border border-purple-100 bg-gradient-to-br from-white to-purple-50/30 hover:from-purple-50 hover:to-blue-50 transition-all duration-300 hover:shadow-lg;
   }
   
   .calendar-day.today {
-    @apply bg-blue-50 border-blue-200;
+    @apply bg-gradient-to-br from-purple-100 to-blue-100 border-purple-300 shadow-lg;
   }
   
   .calendar-day.other-month {
-    @apply bg-slate-50 text-slate-400;
+    @apply bg-gradient-to-br from-slate-50 to-slate-100 text-slate-400;
   }
 
-  /* Loading states */
+  /* Loading states coloridos */
   .loading-skeleton {
-    @apply animate-pulse bg-slate-200 rounded;
+    @apply animate-pulse bg-gradient-to-r from-purple-200 to-blue-200 rounded-2xl;
   }
 
-  /* Efectos hover profesionales */
+  /* Efectos hover premium */
   .hover-lift {
-    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+    @apply transition-all duration-500 hover:shadow-2xl hover:-translate-y-3 hover:scale-105;
   }
 
-  /* Gradientes profesionales */
-  .gradient-bg {
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/25;
+  }
+
+  /* Gradientes de fondo */
+  .gradient-bg-primary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   }
 
+  .gradient-bg-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  }
+
+  .gradient-bg-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  }
+
+  .gradient-bg-info {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  }
+
+  /* Texto con gradiente */
   .gradient-text {
-    @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent font-bold;
+  }
+
+  .gradient-text-success {
+    @apply bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent font-bold;
+  }
+
+  .gradient-text-warning {
+    @apply bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent font-bold;
+  }
+
+  /* Bordes con gradiente */
+  .border-gradient {
+    @apply border-2 border-transparent bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-border;
+  }
+
+  /* Sombras coloridas */
+  .shadow-purple {
+    box-shadow: 0 25px 50px -12px rgba(147, 51, 234, 0.25);
+  }
+
+  .shadow-blue {
+    box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.25);
+  }
+
+  .shadow-green {
+    box-shadow: 0 25px 50px -12px rgba(34, 197, 94, 0.25);
+  }
+
+  .shadow-red {
+    box-shadow: 0 25px 50px -12px rgba(239, 68, 68, 0.25);
   }
 }
 
-/* Scrollbar personalizado */
+/* Scrollbar personalizado colorido */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f8fafc;
-  border-radius: 3px;
+  background: linear-gradient(to bottom, #f1f5f9, #e2e8f0);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
+  background: linear-gradient(to bottom, #8b5cf6, #3b82f6);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: linear-gradient(to bottom, #7c3aed, #2563eb);
 }
 
-/* Animaciones profesionales */
-@keyframes fadeIn {
+/* Animaciones premium */
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -222,10 +265,10 @@
   }
 }
 
-@keyframes slideIn {
+@keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(30px);
   }
   to {
     opacity: 1;
@@ -236,7 +279,7 @@
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.9);
   }
   to {
     opacity: 1;
@@ -244,31 +287,175 @@
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-out;
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0,0,0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
 }
 
-.animate-slide-in {
-  animation: slideIn 0.3s ease-out;
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s ease-out;
 }
 
 .animate-scale-in {
-  animation: scaleIn 0.2s ease-out;
+  animation: scaleIn 0.3s ease-out;
+}
+
+.animate-bounce-custom {
+  animation: bounce 2s infinite;
+}
+
+.animate-pulse-custom {
+  animation: pulse 2s infinite;
+}
+
+/* Efectos de glassmorphism */
+.glass {
+  @apply bg-white/20 backdrop-blur-lg border border-white/30;
+}
+
+.glass-dark {
+  @apply bg-slate-900/20 backdrop-blur-lg border border-white/10;
+}
+
+/* Efectos de neomorphism */
+.neomorph {
+  background: #ffffff;
+  box-shadow: 20px 20px 60px #d1d1d1, -20px -20px 60px #ffffff;
+}
+
+.neomorph-inset {
+  background: #ffffff;
+  box-shadow: inset 20px 20px 60px #d1d1d1, inset -20px -20px 60px #ffffff;
+}
+
+/* Estados de interacción mejorados */
+.interactive {
+  @apply cursor-pointer select-none transition-all duration-300;
+}
+
+.interactive:hover {
+  @apply transform scale-105 shadow-xl;
+}
+
+.interactive:active {
+  @apply transform scale-95;
+}
+
+/* Efectos de partículas */
+.particle-bg {
+  background-image: radial-gradient(circle at 25% 25%, #8b5cf6 0%, transparent 50%),
+                    radial-gradient(circle at 75% 75%, #3b82f6 0%, transparent 50%);
+  background-size: 100px 100px;
+  background-position: 0 0, 50px 50px;
+  animation: particle-float 20s ease-in-out infinite;
+}
+
+@keyframes particle-float {
+  0%, 100% {
+    background-position: 0 0, 50px 50px;
+  }
+  50% {
+    background-position: 100px 100px, 150px 150px;
+  }
+}
+
+/* Efectos de texto brillante */
+.text-glow {
+  text-shadow: 0 0 10px rgba(139, 92, 246, 0.5),
+               0 0 20px rgba(139, 92, 246, 0.3),
+               0 0 30px rgba(139, 92, 246, 0.1);
+}
+
+/* Botones con efectos especiales */
+.btn-magic {
+  @apply relative overflow-hidden;
+}
+
+.btn-magic::before {
+  content: '';
+  @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full;
+  transition: transform 0.6s;
+}
+
+.btn-magic:hover::before {
+  @apply translate-x-full;
+}
+
+/* Indicadores de carga premium */
+.loading-dots {
+  @apply inline-flex space-x-1;
+}
+
+.loading-dots div {
+  @apply w-2 h-2 bg-purple-500 rounded-full animate-bounce;
+}
+
+.loading-dots div:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.loading-dots div:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+/* Efectos de hover para cards */
+.card-hover-effect {
+  @apply relative overflow-hidden;
+}
+
+.card-hover-effect::before {
+  content: '';
+  @apply absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/10 to-blue-500/0 transform translate-y-full;
+  transition: transform 0.5s ease;
+}
+
+.card-hover-effect:hover::before {
+  @apply translate-y-0;
 }
 
 /* Efectos de focus mejorados */
-.focus-ring {
-  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+.focus-ring-purple {
+  @apply focus:outline-none focus:ring-4 focus:ring-purple-300 focus:ring-offset-2;
 }
 
-/* Transiciones suaves globales */
+.focus-ring-blue {
+  @apply focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-offset-2;
+}
+
+/* Transiciones globales suaves */
 * {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  transition-duration: 200ms;
 }
 
-/* Mejoras de accesibilidad */
+/* Mejoras de accesibilidad con estilo */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -281,28 +468,11 @@
   border: 0;
 }
 
-/* Estados de interacción mejorados */
-.interactive {
-  @apply cursor-pointer select-none;
+/* Efectos de selección personalizados */
+::selection {
+  @apply bg-purple-200 text-purple-900;
 }
 
-.interactive:hover {
-  @apply transform scale-105;
-}
-
-.interactive:active {
-  @apply transform scale-95;
-}
-
-/* Sombras profesionales */
-.shadow-soft {
-  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
-}
-
-.shadow-medium {
-  box-shadow: 0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-.shadow-strong {
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15), 0 2px 10px -2px rgba(0, 0, 0, 0.05);
+::-moz-selection {
+  @apply bg-purple-200 text-purple-900;
 }
